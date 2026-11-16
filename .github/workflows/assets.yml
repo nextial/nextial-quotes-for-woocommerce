@@ -1,0 +1,30 @@
+# Updates readme.txt and the WordPress.org images (.wordpress-org/) without a new version.
+name: Update WordPress.org readme and assets
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "readme.txt"
+      - ".wordpress-org/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  assets:
+    # Off until the plugin is approved on WordPress.org: then set the repository variable WPORG_LIVE=true
+    # and add the SVN_USERNAME / SVN_PASSWORD secrets.
+    if: ${{ vars.WPORG_LIVE == 'true' || github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-24.04  # ubuntu-latest (26.04) cannot install subversion as of 11/11/2026
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: WordPress.org readme/assets update
+        uses: 10up/action-wordpress-plugin-asset-update@2480306f6f693672726d08b5917ea114cb2825f7 # 2.2.0
+        env:
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+          SLUG: nextial-quotes-for-woocommerce
+          IGNORE_OTHER_FILES: true
