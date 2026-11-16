@@ -44,7 +44,7 @@ class Nextial_Q_Frontend {
 		if ( ! $product->is_type( array( 'simple', 'variable' ) ) && ! apply_filters( 'nextial_q_button_for_type', false, $product ) ) {
 			return;
 		}
-		echo '<button type="submit" name="nxq_add" value="' . esc_attr( $product->get_id() ) . '" class="button alt nxq-add-button">' . esc_html( Nextial_Q_Settings::get( 'button_label' ) ) . '</button>';
+		echo '<button type="submit" name="nxq_add" value="' . esc_attr( $product->get_id() ) . '" class="button alt wp-element-button nxq-add-button">' . esc_html( Nextial_Q_Settings::get( 'button_label' ) ) . '</button>';
 	}
 
 	/**
@@ -61,7 +61,7 @@ class Nextial_Q_Frontend {
 		}
 		echo '<form class="cart nxq-fallback" method="post" action="' . esc_url( get_permalink( $product->get_id() ) ) . '">';
 		echo '<input type="number" name="quantity" value="1" min="1" step="1" class="input-text qty text" aria-label="' . esc_attr__( 'Quantity', 'nextial-quotes-for-woocommerce' ) . '"> ';
-		echo '<button type="submit" name="nxq_add" value="' . esc_attr( $product->get_id() ) . '" class="button alt nxq-add-button">' . esc_html( Nextial_Q_Settings::get( 'button_label' ) ) . '</button>';
+		echo '<button type="submit" name="nxq_add" value="' . esc_attr( $product->get_id() ) . '" class="button alt wp-element-button nxq-add-button">' . esc_html( Nextial_Q_Settings::get( 'button_label' ) ) . '</button>';
 		echo '</form>';
 	}
 
@@ -85,9 +85,9 @@ class Nextial_Q_Frontend {
 		}
 		if ( $product->is_type( 'simple' ) ) {
 			$url  = add_query_arg( 'nxq_add', $product->get_id(), $product->get_permalink() );
-			$link = '<a href="' . esc_url( $url ) . '" rel="nofollow" class="button nxq-add-button">' . esc_html( Nextial_Q_Settings::get( 'button_label' ) ) . '</a>';
+			$link = '<a href="' . esc_url( $url ) . '" rel="nofollow" class="button wp-element-button nxq-add-button">' . esc_html( Nextial_Q_Settings::get( 'button_label' ) ) . '</a>';
 		} else {
-			$link = '<a href="' . esc_url( $product->get_permalink() ) . '" class="button nxq-add-button">' . esc_html( Nextial_Q_Settings::get( 'button_label' ) ) . '</a>';
+			$link = '<a href="' . esc_url( $product->get_permalink() ) . '" class="button wp-element-button nxq-add-button">' . esc_html( Nextial_Q_Settings::get( 'button_label' ) ) . '</a>';
 		}
 		return $quote_only ? $link : $html . ' ' . $link;
 	}
@@ -236,7 +236,7 @@ class Nextial_Q_Frontend {
 	public static function styles() {
 		wp_register_style( 'nextial-quotes', false, array(), NEXTIAL_Q_VERSION );
 		wp_enqueue_style( 'nextial-quotes' );
-		$css = '.nxq-add-button{margin-left:.5em}.nxq-table input.qty{width:5em}.nxq-form p{margin:0 0 1em}.nxq-form label{display:block;font-weight:600}.nxq-form input[type=text],.nxq-form input[type=email],.nxq-form input[type=tel],.nxq-form textarea{width:100%;max-width:560px}.nxq-hp{position:absolute!important;left:-9999px!important}';
+		$css = '.nxq-add-button{margin-left:.5em}.nxq-table input.qty{width:5em}.nxq-form p{margin:0 0 1em}.nxq-form label{display:block;font-weight:600}.nxq-form input[type=text],.nxq-form input[type=email],.nxq-form input[type=tel],.nxq-form textarea{width:100%;max-width:560px;padding:.5em;font:inherit;box-sizing:border-box}.nxq-table input.qty{padding:.3em;font:inherit}.nxq-hp{position:absolute!important;left:-9999px!important}form.cart:has(.nxq-add-button){display:flex;flex-wrap:wrap;align-items:center;gap:.5em}form.cart:has(.nxq-add-button)>*{float:none;margin-top:0;margin-bottom:0}form.cart>.nxq-add-button{width:auto;flex:0 0 auto}';
 		if ( is_product() ) {
 			$product = wc_get_product( get_queried_object_id() );
 			if ( $product && Nextial_Q_Rules::is_quote_only( $product ) ) {
@@ -342,7 +342,7 @@ class Nextial_Q_Frontend {
 			echo '<td><button type="submit" class="button nxq-remove" name="nxq_remove" value="' . esc_attr( $key ) . '" aria-label="' . esc_attr__( 'Remove', 'nextial-quotes-for-woocommerce' ) . '">&times;</button></td></tr>';
 		}
 		echo '</tbody></table>';
-		echo '<p><button type="submit" class="button" name="nxq_update" value="1">' . esc_html__( 'Update list', 'nextial-quotes-for-woocommerce' ) . '</button></p>';
+		echo '<p><button type="submit" class="button wp-element-button" name="nxq_update" value="1">' . esc_html__( 'Update list', 'nextial-quotes-for-woocommerce' ) . '</button></p>';
 		echo '</form>';
 		Nextial_Q_Request::render_form();
 	}

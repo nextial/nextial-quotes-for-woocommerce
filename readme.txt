@@ -76,6 +76,15 @@ This plugin can use **Cloudflare Turnstile**, an anti-spam check, only if you en
 
 No other external service is contacted.
 
+== Screenshots ==
+
+1. Shop and category pages: price hidden, "Add to quote" instead of "Add to cart" (only for the categories you choose).
+2. Product page with quantity and "Add to quote" (simple and variable products).
+3. The quote list and request form: change quantities, remove items, send the request. No account needed.
+4. The e-mail your customer receives: prices, total, "Accept and pay" and "Decline".
+5. The request is a normal WooCommerce order with the "Quote sent" status and the payment link for the customer.
+6. Settings in WooCommerce → Settings → Quotes.
+
 == Changelog ==
 
 = 0.1.0 =

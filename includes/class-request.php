@@ -48,7 +48,7 @@ class Nextial_Q_Request {
 			$result = self::submit( wp_unslash( $_POST ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification.Missing -- nonce and fields checked in submit().
 			if ( is_wp_error( $result ) ) {
 				wc_add_notice( $result->get_error_message(), 'error' );
-				set_transient( 'nxq_form_' . self::visitor_hash(), self::sticky( wp_unslash( $_POST ) ), 10 * MINUTE_IN_SECONDS ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised in sticky().
+				Nextial_Q_List::form_values( self::sticky( wp_unslash( $_POST ) ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised in sticky().
 				wp_safe_redirect( Nextial_Q_Settings::page_url() );
 			} else {
 				wp_safe_redirect(
@@ -208,8 +208,8 @@ class Nextial_Q_Request {
 		$order->add_order_note( __( 'Quote request received. Adjust the prices if needed, then use Order actions → "Send quote to customer".', 'nextial-quotes-for-woocommerce' ) );
 
 		set_transient( $rate_key, $count + 1, HOUR_IN_SECONDS );
+		Nextial_Q_List::form_values( array() );
 		Nextial_Q_List::clear();
-		delete_transient( 'nxq_form_' . self::visitor_hash() );
 
 		/**
 		 * A quote request was created.
@@ -258,8 +258,7 @@ class Nextial_Q_Request {
 	 * The request form under the list.
 	 */
 	public static function render_form() {
-		$v = get_transient( 'nxq_form_' . self::visitor_hash() );
-		$v = is_array( $v ) ? $v : array();
+		$v = Nextial_Q_List::form_values();
 		if ( ! $v && is_user_logged_in() ) {
 			$c = new WC_Customer( get_current_user_id() );
 			$v = array(
@@ -291,7 +290,7 @@ class Nextial_Q_Request {
 			<?php if ( '' !== $privacy ) : ?>
 				<p><label style="font-weight:normal"><input type="checkbox" name="nxq_privacy" value="1" required> <?php echo esc_html( $privacy ); ?></label></p>
 			<?php endif; ?>
-			<p><button type="submit" class="button alt" name="nxq_submit" value="1"><?php esc_html_e( 'Send quote request', 'nextial-quotes-for-woocommerce' ); ?></button></p>
+			<p><button type="submit" class="button alt wp-element-button" name="nxq_submit" value="1"><?php esc_html_e( 'Send quote request', 'nextial-quotes-for-woocommerce' ); ?></button></p>
 		</form>
 		<?php
 	}

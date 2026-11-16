@@ -192,6 +192,25 @@ class Nextial_Q_List {
 	}
 
 	/**
+	 * Form values kept after an error, in this visitor's own WooCommerce session
+	 * (never shared between visitors behind the same IP, proxy or CDN).
+	 *
+	 * @param array|null $values Values to keep; null to read; empty array to forget.
+	 * @return array
+	 */
+	public static function form_values( $values = null ) {
+		if ( ! function_exists( 'WC' ) || ! WC()->session || ( method_exists( WC()->session, 'has_session' ) && ! WC()->session->has_session() ) ) {
+			return array();
+		}
+		if ( null === $values ) {
+			$v = WC()->session->get( 'nextial_q_form', array() );
+			return is_array( $v ) ? $v : array();
+		}
+		WC()->session->set( 'nextial_q_form', $values ? $values : null );
+		return $values;
+	}
+
+	/**
 	 * Product object for a line (variation if any).
 	 *
 	 * @param array $item Item.

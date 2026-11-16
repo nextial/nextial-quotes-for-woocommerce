@@ -111,7 +111,8 @@ abstract class Nextial_Q_Email_Base extends WC_Email {
 			}
 			if ( ! $this->is_customer_email() ) {
 				do_action( 'woocommerce_email_customer_details', $order, true, false, $this );
-			} elseif ( $order->get_customer_note() ) {
+			} elseif ( $order->get_customer_note() && ! $this->with_prices() ) {
+				// With prices, the WooCommerce order table already shows the note.
 				echo '<p><strong>' . esc_html__( 'Your message:', 'nextial-quotes-for-woocommerce' ) . '</strong><br>' . wp_kses_post( nl2br( esc_html( $order->get_customer_note() ) ) ) . '</p>';
 			}
 		}
