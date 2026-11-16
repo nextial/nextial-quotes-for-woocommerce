@@ -1,7 +1,6 @@
 <?php
 /**
  * Plugin Name:       Nextial Quotes – Request a Quote for WooCommerce
- * Plugin URI:        https://nextial.it/quotes/
  * Description:       Let customers request a quote for one or many products. Requests become WooCommerce orders with a "Quote request" status; set your prices and send the quote in one click – the customer accepts and pays online, or declines.
  * Version:           0.1.0
  * Requires at least: 6.5
