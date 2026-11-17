@@ -13,6 +13,20 @@ defined( 'ABSPATH' ) || exit;
 class Nextial_Q_Emails {
 
 	/**
+	 * Result of the last quote e-mail: array( 'sent'|'off'|'failed', error message ).
+	 *
+	 * @var array|null
+	 */
+	public static $last_quote = null;
+
+	/**
+	 * Error caught from wp_mail_failed while one of our e-mails is being sent.
+	 *
+	 * @var string|null
+	 */
+	private static $mail_error = null;
+
+	/**
 	 * Hooks.
 	 */
 	public static function init() {
@@ -57,11 +71,51 @@ class Nextial_Q_Emails {
 	public static function on_request( $order_id, $order ) {
 		$a = self::email( 'Nextial_Q_Email_New_Request' );
 		if ( $a ) {
-			$a->trigger( $order );
+			$r = self::send_watched( $a, $order );
+			if ( 'failed' === $r[0] ) {
+				Nextial_Q_Mail_Alerts::request_mail_failed( $order, $r[1] );
+			}
 		}
 		$c = self::email( 'Nextial_Q_Email_Request_Received' );
 		if ( $c ) {
-			$c->trigger( $order );
+			$r = self::send_watched( $c, $order );
+			if ( 'failed' === $r[0] ) {
+				/* translators: %s: error message */
+				$order->add_order_note( sprintf( __( 'The confirmation e-mail to the customer could not be sent: %s', 'nextial-quotes-for-woocommerce' ), $r[1] ) );
+			}
+		}
+	}
+
+	/**
+	 * Send one of our e-mails and tell whether WordPress reported a failure.
+	 *
+	 * @param WC_Email $email E-mail.
+	 * @param WC_Order $order Order.
+	 * @return array array( 'sent'|'off'|'failed', error message ).
+	 */
+	public static function send_watched( $email, $order ) {
+		if ( ! $email->is_enabled() ) {
+			return array( 'off', '' );
+		}
+		self::$mail_error = null;
+		add_action( 'wp_mail_failed', array( __CLASS__, 'catch_mail_error' ) );
+		$sent = (bool) $email->trigger( $order );
+		remove_action( 'wp_mail_failed', array( __CLASS__, 'catch_mail_error' ) );
+		if ( $sent ) {
+			return array( 'sent', '' );
+		}
+		$msg = null !== self::$mail_error && '' !== self::$mail_error ? self::$mail_error : __( 'WordPress could not send the e-mail (no error message).', 'nextial-quotes-for-woocommerce' );
+		return array( 'failed', wp_strip_all_tags( $msg ) );
+	}
+
+	/**
+	 * Remember the error WordPress gives when wp_mail() fails.
+	 *
+	 * @param WP_Error $error Error.
+	 */
+	public static function catch_mail_error( $error ) {
+		if ( is_wp_error( $error ) ) {
+			self::$mail_error = $error->get_error_message();
 		}
 	}
 
@@ -73,8 +127,13 @@ class Nextial_Q_Emails {
 	 * @return bool Sent.
 	 */
 	public static function on_sent( $order_id, $order ) {
-		$e = self::email( 'Nextial_Q_Email_Quote' );
-		return $e ? (bool) $e->trigger( $order ) : false;
+		$e                = self::email( 'Nextial_Q_Email_Quote' );
+		self::$last_quote = $e ? self::send_watched( $e, $order ) : array( 'off', '' );
+		if ( 'failed' === self::$last_quote[0] ) {
+			/* translators: %s: error message */
+			$order->add_order_note( sprintf( __( 'The quote e-mail to the customer could not be sent: %s. Copy the payment link from this order and send it yourself.', 'nextial-quotes-for-woocommerce' ), self::$last_quote[1] ) );
+		}
+		return 'sent' === self::$last_quote[0];
 	}
 
 	/**
@@ -88,7 +147,11 @@ class Nextial_Q_Emails {
 		$e = self::email( 'Nextial_Q_Email_Declined' );
 		if ( $e ) {
 			$e->reason = (string) $reason;
-			$e->trigger( $order );
+			$r         = self::send_watched( $e, $order );
+			if ( 'failed' === $r[0] ) {
+				/* translators: %s: error message */
+				$order->add_order_note( sprintf( __( 'The "quote declined" e-mail to the shop could not be sent: %s', 'nextial-quotes-for-woocommerce' ), $r[1] ) );
+			}
 		}
 	}
 

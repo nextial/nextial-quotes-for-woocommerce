@@ -259,7 +259,9 @@ class Nextial_Q_Settings {
 			</tr>
 			<tr>
 				<th scope="row"><label for="nxq-admin-email"><?php esc_html_e( 'Send new requests to', 'nextial-quotes-for-woocommerce' ); ?></label></th>
-				<td><input id="nxq-admin-email" type="email" class="regular-text" name="<?php echo esc_attr( $name( 'admin_email' ) ); ?>" value="<?php echo esc_attr( $s['admin_email'] ); ?>" placeholder="<?php echo esc_attr( get_option( 'admin_email' ) ); ?>"></td>
+				<td><input id="nxq-admin-email" type="email" class="regular-text" name="<?php echo esc_attr( $name( 'admin_email' ) ); ?>" value="<?php echo esc_attr( $s['admin_email'] ); ?>" placeholder="<?php echo esc_attr( get_option( 'admin_email' ) ); ?>">
+					<a class="button" href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=nxq_test_mail' ), 'nxq_test_mail' ) ); ?>"><?php esc_html_e( 'Send a test e-mail', 'nextial-quotes-for-woocommerce' ); ?></a>
+					<p class="description"><?php esc_html_e( 'Every request is saved as an order before any e-mail is sent, so nothing is lost. If WordPress cannot send the e-mail, you get a warning in the dashboard and a note on the order. Save your changes before sending the test.', 'nextial-quotes-for-woocommerce' ); ?></p></td>
 			</tr>
 			<tr>
 				<th scope="row"><label for="nxq-max"><?php esc_html_e( 'Max requests per hour from one visitor', 'nextial-quotes-for-woocommerce' ); ?></label></th>

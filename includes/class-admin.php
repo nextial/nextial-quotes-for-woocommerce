@@ -67,6 +67,7 @@ class Nextial_Q_Admin {
 		}
 		$order->update_meta_data( '_nextial_quote_sent', time() );
 		$order->save();
+		Nextial_Q_Emails::$last_quote = null;
 		/**
 		 * The quote was sent (the e-mail goes out on this action).
 		 *
@@ -74,6 +75,10 @@ class Nextial_Q_Admin {
 		 * @param WC_Order $order    Order.
 		 */
 		do_action( 'nextial_q_quote_sent', $order->get_id(), $order );
+		if ( is_array( Nextial_Q_Emails::$last_quote ) && 'failed' === Nextial_Q_Emails::$last_quote[0] ) {
+			/* translators: %s: error message */
+			return new WP_Error( 'nxq_mail', sprintf( __( 'The quote is marked as sent, but the e-mail to the customer could not be sent (%s). Copy the payment link from the Quote box and send it yourself, or fix your e-mail setup and choose "Send the quote again".', 'nextial-quotes-for-woocommerce' ), Nextial_Q_Emails::$last_quote[1] ) );
+		}
 		return true;
 	}
 

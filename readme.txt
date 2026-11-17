@@ -4,7 +4,7 @@ Tags: request a quote, quote, hide price, b2b, woocommerce quote
 Requires at least: 6.5
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.1.0
+Stable tag: 0.1.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -22,6 +22,7 @@ Many stores cannot show one price for everything: furniture made to measure, who
 6. **Send the quote in one click**: open the request, change prices, add shipping or fees with the normal WooCommerce tools, then choose **Order actions → "Send quote to customer"**. The customer receives the quote with **"Accept and pay"** (the standard WooCommerce payment page, any payment method) and **"Decline"**.
 7. **Accepted?** The order moves to Processing like any paid order, stock is reduced only then, and the usual WooCommerce e-mails go out. **Declined?** The order is cancelled, the reason is saved in the order notes and you get an e-mail. Opening the decline link does not decline by itself (safe against e-mail link scanners): the customer confirms with a button.
 8. Quotes are kept out of WooCommerce Analytics until they are paid. Customers with an account see their quotes in My Account → Orders, with a "Pay" button.
+9. **No lost requests.** The request is saved as an order before any e-mail is sent. **WooCommerce → Quote requests** shows how many requests are waiting. If WordPress cannot send the "new request" e-mail (a common problem with shared hosting), you get a warning in the dashboard with links to the requests, and a note on the order. A **"Send a test e-mail"** button in the settings checks your setup in one click.
 
 Light on your database: no session, cookie or database row is created for a visitor until they really add a product to the quote list, so page caching keeps working. Works with any theme and page builder: plain HTML forms, no JavaScript required (except the optional Turnstile check), the list adapts to phones, shortcode `[nextial_quote]` for the quote page. Compatible with High-Performance Order Storage (HPOS) and the classic order storage.
 
@@ -66,6 +67,10 @@ Create a free Turnstile widget in your Cloudflare dashboard, then paste the Site
 
 No. The plugin starts a WooCommerce session only when a visitor adds a product to the quote list. Visitors who only browse get no cookie and no row in the database.
 
+= I don't receive the e-mail for new quote requests. Are they lost? =
+
+No. Every request is saved as a WooCommerce order with the "Quote request" status before any e-mail is sent: find them in WooCommerce → Quote requests. If WordPress reports that the e-mail failed, Nextial Quotes shows a warning in the dashboard and adds a note to the order. Use "Send a test e-mail" in WooCommerce → Settings → Quotes: if the test does not arrive, your site cannot deliver e-mail and an SMTP plugin usually fixes it. Note: some hosts accept the e-mail and lose it later; WordPress cannot see that, so check the Quote requests counter too.
+
 == External services ==
 
 This plugin can use **Cloudflare Turnstile**, an anti-spam check, only if you enter your own Turnstile keys in WooCommerce → Settings → Quotes. It is off by default.
@@ -86,6 +91,10 @@ No other external service is contacted.
 6. Settings in WooCommerce → Settings → Quotes.
 
 == Changelog ==
+
+= 0.1.1 =
+* No lost requests: "Quote requests" counter in the WooCommerce menu, dashboard warning and order note when the new-request e-mail cannot be sent, "Send a test e-mail" button in the settings.
+* If the quote e-mail to the customer cannot be sent, the order screen says so (with what to do) instead of "Quote sent".
 
 = 0.1.0 =
 * First version: quote list and request form, requests as WooCommerce orders ("Quote request" / "Quote sent"), send quote in one click, Accept and pay / Decline, rules by category and excluded products, hide price and "Add to cart", four editable e-mails, optional Cloudflare Turnstile, no session until a product is added, list readable on phones.
