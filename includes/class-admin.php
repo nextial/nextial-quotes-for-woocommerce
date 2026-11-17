@@ -60,6 +60,11 @@ class Nextial_Q_Admin {
 		if ( count( $order->get_items() ) < 1 || (float) $order->get_total() <= 0 ) {
 			return new WP_Error( 'nxq_total', __( 'Set the prices first: the quote total is zero.', 'nextial-quotes-for-woocommerce' ) );
 		}
+		if ( ! $order->get_meta( '_nextial_quote' ) ) {
+			// Quote created by hand in the admin (Add order → status "Quote request"): treat it like a request from the form.
+			$order->update_meta_data( '_nextial_quote', NEXTIAL_Q_VERSION );
+			$order->update_meta_data( '_nextial_quote_source', 'admin' );
+		}
 		if ( Nextial_Q_Statuses::SENT !== $order->get_status() ) {
 			$order->set_status( Nextial_Q_Statuses::SENT, __( 'Quote sent to the customer.', 'nextial-quotes-for-woocommerce' ) );
 		} else {
@@ -113,7 +118,7 @@ class Nextial_Q_Admin {
 	 * @param WC_Order $order Order.
 	 */
 	public static function box( $order ) {
-		if ( ! $order instanceof WC_Order || ! $order->get_meta( '_nextial_quote' ) ) {
+		if ( ! $order instanceof WC_Order || ( ! $order->get_meta( '_nextial_quote' ) && ! Nextial_Q_Statuses::is_quote( $order ) ) ) {
 			return;
 		}
 		echo '<div class="form-field form-field-wide nxq-admin-box" style="margin-top:12px;padding:10px 12px;background:#f6f7f7;border-left:4px solid #2271b1">';
@@ -128,6 +133,8 @@ class Nextial_Q_Admin {
 			echo '<br>' . esc_html__( 'Payment link for the customer:', 'nextial-quotes-for-woocommerce' ) . ' <input type="text" readonly class="widefat" onclick="this.select()" value="' . esc_attr( $order->get_checkout_payment_url() ) . '">';
 		} elseif ( $order->get_meta( '_nextial_quote_declined' ) ) {
 			echo '<strong>' . esc_html__( 'Quote declined by the customer', 'nextial-quotes-for-woocommerce' ) . '</strong>';
+		} elseif ( 'admin' === $order->get_meta( '_nextial_quote_source' ) ) {
+			echo '<strong>' . esc_html__( 'Created from a quote', 'nextial-quotes-for-woocommerce' ) . '</strong>';
 		} else {
 			echo '<strong>' . esc_html__( 'Created from a quote request', 'nextial-quotes-for-woocommerce' ) . '</strong>';
 		}
