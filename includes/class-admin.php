@@ -131,6 +131,11 @@ class Nextial_Q_Admin {
 		} else {
 			echo '<strong>' . esc_html__( 'Created from a quote request', 'nextial-quotes-for-woocommerce' ) . '</strong>';
 		}
+		$lang = (string) $order->get_meta( '_nextial_quote_lang' );
+		if ( '' !== $lang ) {
+			/* translators: %s: language code, e.g. it */
+			echo '<br>' . esc_html( sprintf( __( 'Language of the request: %s', 'nextial-quotes-for-woocommerce' ), $lang ) );
+		}
 		echo '</div>';
 	}
 }

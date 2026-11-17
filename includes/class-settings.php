@@ -116,6 +116,7 @@ class Nextial_Q_Settings {
 		add_action( 'woocommerce_settings_tabs_nextial_quotes', array( __CLASS__, 'render' ) );
 		add_action( 'woocommerce_update_options_nextial_quotes', array( __CLASS__, 'handle_save' ) );
 		add_filter( 'plugin_action_links_' . plugin_basename( NEXTIAL_Q_FILE ), array( __CLASS__, 'action_links' ) );
+		add_action( 'admin_init', array( __CLASS__, 'register_strings' ) );
 	}
 
 	/**
@@ -149,7 +150,53 @@ class Nextial_Q_Settings {
 	 */
 	public static function page_url() {
 		$id = (int) self::get( 'page_id' );
+		if ( $id ) {
+			// Multilingual sites (WPML, Polylang): the quote page in the visitor's language, if translated.
+			$id = (int) apply_filters( 'wpml_object_id', $id, 'page', true ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WPML/Polylang API.
+		}
 		return $id ? (string) get_permalink( $id ) : home_url( '/' );
+	}
+
+	/**
+	 * Texts typed in the settings, translatable with WPML or Polylang (String translation).
+	 *
+	 * @return array Setting key => string name.
+	 */
+	public static function translatable() {
+		return array(
+			'button_label' => 'Button text',
+			'privacy_text' => 'Privacy checkbox text',
+		);
+	}
+
+	/**
+	 * A text setting in the visitor's language.
+	 *
+	 * @param string $key button_label or privacy_text.
+	 * @return string
+	 */
+	public static function text( $key ) {
+		$value = (string) self::get( $key );
+		$names = self::translatable();
+		if ( '' === $value || ! isset( $names[ $key ] ) ) {
+			return $value;
+		}
+		return (string) apply_filters( 'wpml_translate_single_string', $value, 'Nextial Quotes', $names[ $key ] ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WPML/Polylang API.
+	}
+
+	/**
+	 * Register the texts with WPML/Polylang so they appear in String translation.
+	 */
+	public static function register_strings() {
+		if ( ! has_action( 'wpml_register_single_string' ) ) {
+			return;
+		}
+		foreach ( self::translatable() as $key => $name ) {
+			$value = (string) self::get( $key );
+			if ( '' !== $value ) {
+				do_action( 'wpml_register_single_string', 'Nextial Quotes', $name, $value ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WPML/Polylang API.
+			}
+		}
 	}
 
 	/**
@@ -218,7 +265,7 @@ class Nextial_Q_Settings {
 							<option value="<?php echo esc_attr( $c->term_id ); ?>" <?php selected( in_array( (int) $c->term_id, array_map( 'intval', $s['categories'] ), true ) ); ?>><?php echo esc_html( $c->name ); ?></option>
 						<?php endforeach; ?>
 					</select>
-					<p class="description"><?php esc_html_e( 'Sub-categories are included.', 'nextial-quotes-for-woocommerce' ); ?></p>
+					<p class="description"><?php esc_html_e( 'Sub-categories are included. Multilingual sites (WPML, Polylang): choose categories and products in the default language, their translations follow.', 'nextial-quotes-for-woocommerce' ); ?></p>
 				</td>
 			</tr>
 			<tr>

@@ -45,9 +45,9 @@ class Nextial_Q_Rules {
 		if ( in_array( $type, array( 'external', 'grouped' ), true ) ) {
 			return false;
 		}
-		$id      = $product->get_parent_id() ? $product->get_parent_id() : $product->get_id();
+		$id      = self::original( $product->get_parent_id() ? $product->get_parent_id() : $product->get_id(), 'product' );
 		$exclude = array_map( 'intval', (array) Nextial_Q_Settings::get( 'exclude' ) );
-		if ( in_array( (int) $id, $exclude, true ) || in_array( (int) $product->get_id(), $exclude, true ) ) {
+		if ( in_array( (int) $id, $exclude, true ) || in_array( (int) self::original( $product->get_id(), 'product_variation' ), $exclude, true ) ) {
 			return false;
 		}
 		if ( 'categories' !== Nextial_Q_Settings::get( 'scope' ) ) {
@@ -57,14 +57,43 @@ class Nextial_Q_Rules {
 		if ( ! $wanted ) {
 			return false;
 		}
-		$cats = wc_get_product_term_ids( $id, 'product_cat' );
+		$own  = $product->get_parent_id() ? $product->get_parent_id() : $product->get_id();
+		$cats = wc_get_product_term_ids( $own, 'product_cat' );
 		foreach ( $cats as $cat ) {
 			$tree = array_merge( array( (int) $cat ), array_map( 'intval', get_ancestors( $cat, 'product_cat', 'taxonomy' ) ) );
+			$tree = array_merge( $tree, array_map( array( __CLASS__, 'original_cat' ), $tree ) );
 			if ( array_intersect( $tree, $wanted ) ) {
 				return true;
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * On multilingual sites (WPML, Polylang) the settings hold IDs in the default language:
+	 * map a translated product or category back to it. Without such a plugin the ID is unchanged.
+	 *
+	 * @param int    $id   Object ID.
+	 * @param string $type Element type (product, product_variation, product_cat).
+	 * @return int
+	 */
+	public static function original( $id, $type ) {
+		$default = apply_filters( 'wpml_default_language', null ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WPML/Polylang API.
+		if ( ! $default ) {
+			return (int) $id;
+		}
+		$orig = apply_filters( 'wpml_object_id', (int) $id, $type, true, $default ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WPML/Polylang API.
+		return $orig ? (int) $orig : (int) $id;
+	}
+
+	/**
+	 * Category in the default language.
+	 *
+	 * @param int $id Term ID.
+	 * @return int
+	 */
+	public static function original_cat( $id ) {
+		return self::original( $id, 'product_cat' );
 	}
 
 	/**

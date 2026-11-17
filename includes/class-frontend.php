@@ -44,7 +44,7 @@ class Nextial_Q_Frontend {
 		if ( ! $product->is_type( array( 'simple', 'variable' ) ) && ! apply_filters( 'nextial_q_button_for_type', false, $product ) ) {
 			return;
 		}
-		echo '<button type="submit" name="nxq_add" value="' . esc_attr( $product->get_id() ) . '" class="button alt wp-element-button nxq-add-button">' . esc_html( Nextial_Q_Settings::get( 'button_label' ) ) . '</button>';
+		echo '<button type="submit" name="nxq_add" value="' . esc_attr( $product->get_id() ) . '" class="button alt wp-element-button nxq-add-button">' . esc_html( Nextial_Q_Settings::text( 'button_label' ) ) . '</button>';
 	}
 
 	/**
@@ -61,7 +61,7 @@ class Nextial_Q_Frontend {
 		}
 		echo '<form class="cart nxq-fallback" method="post" action="' . esc_url( get_permalink( $product->get_id() ) ) . '">';
 		echo '<input type="number" name="quantity" value="1" min="1" step="1" class="input-text qty text" aria-label="' . esc_attr__( 'Quantity', 'nextial-quotes-for-woocommerce' ) . '"> ';
-		echo '<button type="submit" name="nxq_add" value="' . esc_attr( $product->get_id() ) . '" class="button alt wp-element-button nxq-add-button">' . esc_html( Nextial_Q_Settings::get( 'button_label' ) ) . '</button>';
+		echo '<button type="submit" name="nxq_add" value="' . esc_attr( $product->get_id() ) . '" class="button alt wp-element-button nxq-add-button">' . esc_html( Nextial_Q_Settings::text( 'button_label' ) ) . '</button>';
 		echo '</form>';
 	}
 
@@ -85,9 +85,9 @@ class Nextial_Q_Frontend {
 		}
 		if ( $product->is_type( 'simple' ) ) {
 			$url  = add_query_arg( 'nxq_add', $product->get_id(), $product->get_permalink() );
-			$link = '<a href="' . esc_url( $url ) . '" rel="nofollow" class="button wp-element-button nxq-add-button">' . esc_html( Nextial_Q_Settings::get( 'button_label' ) ) . '</a>';
+			$link = '<a href="' . esc_url( $url ) . '" rel="nofollow" class="button wp-element-button nxq-add-button">' . esc_html( Nextial_Q_Settings::text( 'button_label' ) ) . '</a>';
 		} else {
-			$link = '<a href="' . esc_url( $product->get_permalink() ) . '" class="button wp-element-button nxq-add-button">' . esc_html( Nextial_Q_Settings::get( 'button_label' ) ) . '</a>';
+			$link = '<a href="' . esc_url( $product->get_permalink() ) . '" class="button wp-element-button nxq-add-button">' . esc_html( Nextial_Q_Settings::text( 'button_label' ) ) . '</a>';
 		}
 		return $quote_only ? $link : $html . ' ' . $link;
 	}

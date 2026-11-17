@@ -67,6 +67,10 @@ Create a free Turnstile widget in your Cloudflare dashboard, then paste the Site
 
 No. The plugin starts a WooCommerce session only when a visitor adds a product to the quote list. Visitors who only browse get no cookie and no row in the database.
 
+= Does it work on multilingual sites (WPML, Polylang)? =
+
+Yes. Choose the quotable categories and excluded products in the default language: their translations follow automatically, so translated products get the quote button and hidden prices too. The "Add to quote" button points to the quote page in the visitor's language (translate the page and keep the `[nextial_quote]` shortcode in it). The button text and the privacy checkbox text can be translated in String translation (group "Nextial Quotes"). The order shows the language of the request. Tested with Polylang; WPML uses the same API. The plugin's own texts are translated through translate.wordpress.org.
+
 = I don't receive the e-mail for new quote requests. Are they lost? =
 
 No. Every request is saved as a WooCommerce order with the "Quote request" status before any e-mail is sent: find them in WooCommerce → Quote requests. If WordPress reports that the e-mail failed, Nextial Quotes shows a warning in the dashboard and adds a note to the order. Use "Send a test e-mail" in WooCommerce → Settings → Quotes: if the test does not arrive, your site cannot deliver e-mail and an SMTP plugin usually fixes it. Note: some hosts accept the e-mail and lose it later; WordPress cannot see that, so check the Quote requests counter too.
@@ -94,6 +98,7 @@ No other external service is contacted.
 
 = 0.1.1 =
 * No lost requests: "Quote requests" counter in the WooCommerce menu, dashboard warning and order note when the new-request e-mail cannot be sent, "Send a test e-mail" button in the settings.
+* Multilingual sites (WPML, Polylang): translated products and categories follow the quote rules, quote page in the visitor's language, translatable button and privacy texts, language of the request on the order.
 * If the quote e-mail to the customer cannot be sent, the order screen says so (with what to do) instead of "Quote sent".
 
 = 0.1.0 =

@@ -146,7 +146,7 @@ class Nextial_Q_Request {
 		if ( 'yes' === Nextial_Q_Settings::get( 'require_phone' ) && '' === $phone ) {
 			return new WP_Error( 'nxq_phone', __( 'Please enter your phone number.', 'nextial-quotes-for-woocommerce' ) );
 		}
-		if ( '' !== (string) Nextial_Q_Settings::get( 'privacy_text' ) && empty( $in['nxq_privacy'] ) ) {
+		if ( '' !== (string) Nextial_Q_Settings::text( 'privacy_text' ) && empty( $in['nxq_privacy'] ) ) {
 			return new WP_Error( 'nxq_privacy', __( 'Please accept the privacy terms.', 'nextial-quotes-for-woocommerce' ) );
 		}
 		$rate_key = 'nxq_rate_' . self::visitor_hash();
@@ -203,6 +203,10 @@ class Nextial_Q_Request {
 		}
 		$order->set_customer_user_agent( wc_get_user_agent() );
 		$order->update_meta_data( '_nextial_quote', NEXTIAL_Q_VERSION );
+		$lang = apply_filters( 'wpml_current_language', null ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WPML/Polylang API.
+		if ( is_string( $lang ) && '' !== $lang ) {
+			$order->update_meta_data( '_nextial_quote_lang', sanitize_key( $lang ) );
+		}
 		$order->calculate_totals();
 		$order->save();
 		$order->add_order_note( __( 'Quote request received. Adjust the prices if needed, then use Order actions → "Send quote to customer".', 'nextial-quotes-for-woocommerce' ) );
@@ -272,7 +276,7 @@ class Nextial_Q_Request {
 			return isset( $v[ $k ] ) ? $v[ $k ] : '';
 		};
 		$phone_r = 'yes' === Nextial_Q_Settings::get( 'require_phone' );
-		$privacy = (string) Nextial_Q_Settings::get( 'privacy_text' );
+		$privacy = (string) Nextial_Q_Settings::text( 'privacy_text' );
 		?>
 		<form method="post" action="<?php echo esc_url( Nextial_Q_Settings::page_url() ); ?>" class="nxq-form">
 			<h3><?php esc_html_e( 'Your details', 'nextial-quotes-for-woocommerce' ); ?></h3>
