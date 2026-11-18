@@ -79,6 +79,10 @@ Yes. In WooCommerce → Orders → Add order, add the products and prices and th
 
 No. Every request is saved as a WooCommerce order with the "Quote request" status before any e-mail is sent: find them in WooCommerce → Quote requests. If WordPress reports that the e-mail failed, Nextial Quotes shows a warning in the dashboard and adds a note to the order. Use "Send a test e-mail" in WooCommerce → Settings → Quotes: if the test does not arrive, your site cannot deliver e-mail and an SMTP plugin usually fixes it. Note: some hosts accept the e-mail and lose it later; WordPress cannot see that, so check the Quote requests counter too.
 
+= Does it work with Elementor? =
+
+Yes, with Elementor and the Hello Elementor theme. To build the quote page with Elementor, add a Shortcode widget with `[nextial_quote]`. We test the whole flow (add to quote, request form, quote e-mail, payment) with Elementor 4.4.1 and Hello Elementor 3.5.2. Product templates made with Elementor Pro are not tested yet: if one hides the quote button, tell us in the support forum.
+
 == External services ==
 
 This plugin can use **Cloudflare Turnstile**, an anti-spam check, only if you enter your own Turnstile keys in WooCommerce → Settings → Quotes. It is off by default.
@@ -104,6 +108,7 @@ No other external service is contacted.
 * No lost requests: "Quote requests" counter in the WooCommerce menu, dashboard warning and order note when the new-request e-mail cannot be sent, "Send a test e-mail" button in the settings.
 * Multilingual sites (WPML, Polylang): translated products and categories follow the quote rules, quote page in the visitor's language, translatable button and privacy texts, language of the request on the order.
 * If the quote e-mail to the customer cannot be sent, the order screen says so (with what to do) instead of "Quote sent".
+* Tested with Elementor 4.4.1 and the Hello Elementor theme (quote page built with the Shortcode widget).
 * Quotes you create yourself in Orders → Add order (status "Quote request") now work like requests from the form: quote box on the order screen, and with Nextial Quotes Pro the PDF, the expiry date and the reminder.
 
 = 0.1.0 =
