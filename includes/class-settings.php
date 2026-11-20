@@ -116,6 +116,7 @@ class Nextial_Q_Settings {
 		add_action( 'woocommerce_settings_tabs_nextial_quotes', array( __CLASS__, 'render' ) );
 		add_action( 'woocommerce_update_options_nextial_quotes', array( __CLASS__, 'handle_save' ) );
 		add_filter( 'plugin_action_links_' . plugin_basename( NEXTIAL_Q_FILE ), array( __CLASS__, 'action_links' ) );
+		add_filter( 'plugin_row_meta', array( __CLASS__, 'row_meta' ), 10, 2 );
 		add_action( 'admin_init', array( __CLASS__, 'register_strings' ) );
 	}
 
@@ -208,6 +209,34 @@ class Nextial_Q_Settings {
 	public static function tab( $tabs ) {
 		$tabs['nextial_quotes'] = __( 'Quotes', 'nextial-quotes-for-woocommerce' );
 		return $tabs;
+	}
+
+	/**
+	 * Checkout of the optional Nextial Quotes Pro add-on (7-day free trial).
+	 */
+	const PRO_URL = 'https://checkout.freemius.com/plugin/45147/plan/79600/?trial=free';
+
+	/**
+	 * Whether Nextial Quotes Pro is active.
+	 *
+	 * @return bool
+	 */
+	public static function pro_active() {
+		return defined( 'NEXTIAL_QP_VERSION' );
+	}
+
+	/**
+	 * Plugins screen: link to the Pro add-on while it is not active.
+	 *
+	 * @param string[] $meta Row meta links.
+	 * @param string   $file Plugin basename.
+	 * @return string[]
+	 */
+	public static function row_meta( $meta, $file ) {
+		if ( plugin_basename( NEXTIAL_Q_FILE ) === $file && ! self::pro_active() ) {
+			$meta[] = '<a href="' . esc_url( self::PRO_URL ) . '" target="_blank" rel="noopener">' . esc_html__( 'Pro: PDF quotes, expiry and reminders (7-day free trial)', 'nextial-quotes-for-woocommerce' ) . '</a>';
+		}
+		return $meta;
 	}
 
 	/**
@@ -325,6 +354,18 @@ class Nextial_Q_Settings {
 				</td>
 			</tr>
 		</table>
+		<?php if ( ! self::pro_active() ) : ?>
+			<div class="nxq-pro-box" style="max-width:720px;margin:16px 0;padding:12px 16px;background:#fff;border:1px solid #c3c4c7;border-left:4px solid #dba617">
+				<p><strong><?php esc_html_e( 'Nextial Quotes Pro (optional)', 'nextial-quotes-for-woocommerce' ); ?></strong></p>
+				<ul style="list-style:disc;margin-left:20px">
+					<li><?php esc_html_e( 'PDF quote attached to the e-mail, on the order and in My Account.', 'nextial-quotes-for-woocommerce' ); ?></li>
+					<li><?php esc_html_e( 'Quote expiry date and an automatic reminder to the customer.', 'nextial-quotes-for-woocommerce' ); ?></li>
+					<li><?php esc_html_e( 'Quote mode only for guests or chosen roles, or only for out-of-stock products.', 'nextial-quotes-for-woocommerce' ); ?></li>
+					<li><?php esc_html_e( 'Custom fields in the request form (VAT number, delivery date and more).', 'nextial-quotes-for-woocommerce' ); ?></li>
+				</ul>
+				<p><a class="button" href="<?php echo esc_url( self::PRO_URL ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'Try Pro free for 7 days', 'nextial-quotes-for-woocommerce' ); ?></a> <?php esc_html_e( 'From $39 a year. Everything on this page stays free.', 'nextial-quotes-for-woocommerce' ); ?></p>
+			</div>
+		<?php endif; ?>
 		<?php
 	}
 }

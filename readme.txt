@@ -26,6 +26,10 @@ Many stores cannot show one price for everything: furniture made to measure, who
 
 Light on your database: no session, cookie or database row is created for a visitor until they really add a product to the quote list, so page caching keeps working. Works with any theme and page builder: plain HTML forms, no JavaScript required (except the optional Turnstile check), the list adapts to phones, shortcode `[nextial_quote]` for the quote page. Compatible with High-Performance Order Storage (HPOS) and the classic order storage.
 
+= Nextial Quotes Pro (optional) =
+
+Everything above is free. The optional [Nextial Quotes Pro](https://checkout.freemius.com/plugin/45147/plan/79600/?trial=free) add-on (7-day free trial, from $39 a year) adds a PDF quote attached to the e-mail, on the order and in My Account; a quote expiry date with an automatic reminder to the customer; quote mode only for guests or chosen roles, or only for out-of-stock products; and custom fields in the request form (VAT number, delivery date and more).
+
 = Use it with ChatGPT or Claude =
 
 Every quote request is a WooCommerce order, so [Nextial Order Events](https://wordpress.org/plugins/nextial-order-events-for-woocommerce/) can alert ChatGPT, Claude or your webhooks the moment a request arrives.
@@ -114,6 +118,7 @@ No other external service is contacted.
 * If the quote e-mail to the customer cannot be sent, the order screen says so (with what to do) instead of "Quote sent".
 * Tested with Elementor 4.4.1 and the Hello Elementor theme (quote page built with the Shortcode widget).
 * Cache-friendly, tested: browsing visitors get no cookie, no PHP session and no "no-store" header, so page caches (Cloudflare, WP Rocket, LiteSpeed Cache) keep working.
+* Settings and Plugins screen: link to the optional Nextial Quotes Pro add-on (7-day free trial). Nothing in the free version is limited.
 * Quotes you create yourself in Orders → Add order (status "Quote request") now work like requests from the form: quote box on the order screen, and with Nextial Quotes Pro the PDF, the expiry date and the reminder.
 
 = 0.1.0 =
