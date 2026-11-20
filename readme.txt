@@ -23,6 +23,7 @@ Many stores cannot show one price for everything: furniture made to measure, who
 7. **Accepted?** The order moves to Processing like any paid order, stock is reduced only then, and the usual WooCommerce e-mails go out. **Declined?** The order is cancelled, the reason is saved in the order notes and you get an e-mail. Opening the decline link does not decline by itself (safe against e-mail link scanners): the customer confirms with a button.
 8. Quotes are kept out of WooCommerce Analytics until they are paid. Customers with an account see their quotes in My Account → Orders, with a "Pay" button.
 9. **No lost requests.** The request is saved as an order before any e-mail is sent. **WooCommerce → Quote requests** shows how many requests are waiting. If WordPress cannot send the "new request" e-mail (a common problem with shared hosting), you get a warning in the dashboard with links to the requests, and a note on the order. A **"Send a test e-mail"** button in the settings checks your setup in one click.
+10. **Quote for a whole wishlist.** With **YITH WooCommerce Wishlist** or **TI WooCommerce Wishlist** (free versions), the wishlist page gets a **"Request a quote for this list"** button: every quotable product of the list (variations included) goes into the quote in one click. In both wishlist plugins this is a paid feature ("Ask for an estimate"); here it is free.
 
 Light on your database: no session, cookie or database row is created for a visitor until they really add a product to the quote list, so page caching keeps working. Works with any theme and page builder: plain HTML forms, no JavaScript required (except the optional Turnstile check), the list adapts to phones, shortcode `[nextial_quote]` for the quote page. Compatible with High-Performance Order Storage (HPOS) and the classic order storage.
 
@@ -91,6 +92,10 @@ No. A visitor who only browses gets no cookie, no PHP session and no `Cache-Cont
 
 Yes, with Elementor and the Hello Elementor theme. To build the quote page with Elementor, add a Shortcode widget with `[nextial_quote]`. We test the whole flow (add to quote, request form, quote e-mail, payment) with Elementor 4.4.1 and Hello Elementor 3.5.2. Product templates made with Elementor Pro are not tested yet: if one hides the quote button, tell us in the support forum.
 
+= Can customers ask for a quote for their whole wishlist? =
+
+Yes, with YITH WooCommerce Wishlist or TI WooCommerce Wishlist. A "Request a quote for this list" button appears under the wishlist; one click adds every quotable product of the list to the quote, with the chosen variations, and opens the quote page. Products that are not quotable, or variable products saved without choosing the options, are listed as "not added". Private wishlists can only be used by their owner; shared or public ones by anyone who can open them. The products are always read again from the wishlist plugin, never from the form. To hide the button: `add_filter( 'nextial_quotes_wishlist_button', '__return_false' );`. Guest lists that TI WooCommerce Wishlist keeps only in the browser have no copy on the server, so the button does not appear for them.
+
 == External services ==
 
 This plugin can use **Cloudflare Turnstile**, an anti-spam check, only if you enter your own Turnstile keys in WooCommerce → Settings → Quotes. It is off by default.
@@ -119,6 +124,7 @@ No other external service is contacted.
 * Tested with Elementor 4.4.1 and the Hello Elementor theme (quote page built with the Shortcode widget).
 * Cache-friendly, tested: browsing visitors get no cookie, no PHP session and no "no-store" header, so page caches (Cloudflare, WP Rocket, LiteSpeed Cache) keep working.
 * Settings and Plugins screen: link to the optional Nextial Quotes Pro add-on (7-day free trial). Nothing in the free version is limited.
+* Quote for a whole wishlist: "Request a quote for this list" button on the wishlist page of YITH WooCommerce Wishlist and TI WooCommerce Wishlist (tested with YITH 4.21.0 and TI 2.14.2, HPOS and classic order storage).
 * Quotes you create yourself in Orders → Add order (status "Quote request") now work like requests from the form: quote box on the order screen, and with Nextial Quotes Pro the PDF, the expiry date and the reminder.
 
 = 0.1.0 =

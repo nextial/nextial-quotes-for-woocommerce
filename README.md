@@ -15,6 +15,7 @@ Status: version 0.1.0, waiting for the first submission to WordPress.org.
 - Requests are WooCommerce orders (HPOS and classic storage), kept out of Analytics until paid; stock is reduced only on payment.
 - One-click "Send quote" from Order actions; safe "Decline" (opening the link does not decline: e-mail scanners cannot cancel a quote).
 - Four editable e-mails in WooCommerce → Settings → Emails.
+- **Quote for a whole wishlist**: "Request a quote for this list" button on the YITH WooCommerce Wishlist and TI WooCommerce Wishlist pages (a paid feature in both wishlist plugins).
 - Works with any theme or page builder: plain HTML forms, no JavaScript required.
 
 ## Use it with ChatGPT or Claude

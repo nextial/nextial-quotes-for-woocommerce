@@ -32,6 +32,7 @@ require_once NEXTIAL_Q_DIR . 'includes/class-request.php';
 require_once NEXTIAL_Q_DIR . 'includes/class-emails.php';
 require_once NEXTIAL_Q_DIR . 'includes/class-admin.php';
 require_once NEXTIAL_Q_DIR . 'includes/class-mail-alerts.php';
+require_once NEXTIAL_Q_DIR . 'includes/class-wishlists.php';
 
 add_action(
 	'before_woocommerce_init',
@@ -56,6 +57,7 @@ add_action(
 		Nextial_Q_Emails::init();
 		Nextial_Q_Admin::init();
 		Nextial_Q_Mail_Alerts::init();
+		Nextial_Q_Wishlists::init();
 	}
 );
 
